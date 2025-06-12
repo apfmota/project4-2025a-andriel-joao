@@ -5,7 +5,7 @@
 ## [Deply frontend](https://project3-2025a-andriel-joao.vercel.app)
 ## [Deploy backend](https://divide-ai-backend-1.onrender.com)
 
-### [Repositório Backend](https://github.com/apfmota/divide-ai-backend)🔗
+### [Repositório Backend](https://github.com/apfmota/divide-ai-backend)🔗 (commits a partir de 11/06 se referem ao projeto atual)
 
 ### Desenvolvedores
 - Andriel Prieto (Ciência da computação)
