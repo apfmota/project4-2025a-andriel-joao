@@ -4,6 +4,9 @@ import Cadastro from '../componentes/cadastro';
 import Login from '../componentes/login';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import { useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
+import { backendServerUrl } from '../config/backendIntegration';
 const AuthPage = () => {
 
   const navigate = useNavigate();
@@ -57,6 +60,22 @@ const AuthPage = () => {
           >
             <p style={{ color: "white", fontFamily: "'Roboto'" }}>Cadastrar</p>
           </Button>
+          <GoogleLogin
+            onSuccess={async credentialResponse => {
+              const googleAuthResponse = await axios.post(backendServerUrl + "/google-auth", {
+                token: credentialResponse.credential
+              }, { withCredentials: true});
+              if (googleAuthResponse.data.userExists) {
+                navigate("/home");
+              } else {
+                navigate("/google-register", { state: { email: googleAuthResponse.data.email } })
+              }
+            }}
+            onError={() => {
+              console.log('Login Failed');
+            }}
+            useOneTap
+          />
         </Box>
       );
     }

@@ -11,6 +11,7 @@ import Profile from './pages/profile';
 import Notas from './pages/notas';
 import './App.css';
 import ViewPurchase from './pages/viewPurchase';
+import GoogleRegister from './pages/googleRegister';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/profile" element={<Profile />}/>
         <Route path="/notas" element={<Notas />}/>
         <Route path="/view-purchase" element={<ViewPurchase />} />
+        <Route path="/google-register" element={<GoogleRegister />} />
         {/* Rota coringa para páginas não encontradas */}
         <Route path="*" element={<NoPage />} />
       </Routes>
