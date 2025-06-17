@@ -76,12 +76,6 @@ const Login = ({ navigate }) => {
     setLoading(false);
   };
 
-  const handleGoogleLogin = (event) => {
-    event.preventDefault();
-    //lidar login etc
-    console.log("googlogando... 🔍");
-  };
-
   return (
     <Box>
       <header>
@@ -120,12 +114,6 @@ const Login = ({ navigate }) => {
               >
                 {loading ? "Carregando..." : "Entrar"}
               </Button>
-              <Button
-                onClick={handleGoogleLogin}
-                variant="outlined"
-                sx={{ borderColor: "white", color: "white" }}
-                endIcon={<GoogleIcon sx={{ color: "white" }} />}
-              />
             </ThemeProvider>
           </ButtonGroup>
           <Box
