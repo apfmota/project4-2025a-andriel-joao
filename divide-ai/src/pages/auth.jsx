@@ -29,7 +29,7 @@ const AuthPage = () => {
       try {
         const googleAuthResponse = await axios.post(
           backendServerUrl + "/google-auth",
-          { token: credentialResponse.credential },
+          { code: credentialResponse.code },
           { withCredentials: true }
         );
 
@@ -47,6 +47,7 @@ const AuthPage = () => {
     onError: () => {
       console.error("Login com Google falhou");
     },
+    flow: "auth-code",
   });
 
   const renderConteudo = () => {
