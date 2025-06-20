@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, use } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import Checkbox from "@mui/material/Checkbox";
 import DropdownCheckboxes from "../util/menudropdown";
@@ -17,13 +17,24 @@ import axios from "axios";
 import { backendServerUrl } from "../config/backendIntegration";
 import SaveIcon from '@mui/icons-material/Save';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import getItemClass from "../AI/itemClassifier";
+import getItemsClasses from "../AI/itemClassifier";
 const paragraph_style = {
   fontFamily: "Roboto, sans-serif",
   fontSize: 19,
   color: "#006bff",
 };
 
-const NFCDataGrid = ({ data, totalValue, numPeople, peopleNames }) => {
+const getInitialClasses = (items) => {
+  const initialClasses = {};
+    items.forEach((item) => {
+      initialClasses[String(item.id)] = item.category;
+    });
+    return initialClasses;
+}
+
+const NFCDataGrid = ({ data, totalValue, numPeople, peopleNames, classifyItems = false }) => {
+
   const updateItems = (items, selected) => {
     let row = 0;
     for (let item of items) {
@@ -54,6 +65,7 @@ const NFCDataGrid = ({ data, totalValue, numPeople, peopleNames }) => {
   const [allChecked, setAllChecked] = useState(
     data.map((item) => item.payers.length === peopleNames.length)
   );
+  const [itemClasses, setItemClasses] = useState(getInitialClasses(data));
 
   const handleCheckboxChange = (rowIndex, personIndex) => {
     const newSelected = [...selected];
@@ -104,6 +116,40 @@ const NFCDataGrid = ({ data, totalValue, numPeople, peopleNames }) => {
 
   const totals = calculateTotals();
 
+  useEffect(() => {
+    const effect = async () => {
+      if (classifyItems) {
+        let newItemsClasses = {};
+        const obtainedClasses = await getItemsClasses(items.map(item => ({ id: item.id, name: item.name })));
+        for (const itemClass of obtainedClasses) {
+          axios.post(backendServerUrl + "/item-category", {
+            itemId: itemClass.id,
+            category: itemClass.category
+          }, { withCredentials: true })
+          newItemsClasses[String(itemClass.id)] = itemClass.category;
+        }
+        setItemClasses(newItemsClasses);
+      }
+    }
+    effect();
+  }, []);
+
+  const displayCategory = (item) => {
+    return (
+      <Paper sx={{
+            padding: "5px",
+            backgroundColor: "#64adec",
+            borderRadius: "5px",
+            color: "#005eb0"
+          }}>
+        {itemClasses[String(item.id)] != undefined
+          ? <span>{itemClasses[String(item.id)]}</span>
+          : <span style={{color: 'red'}}>Aguardando classificação...</span>
+        }
+      </Paper>
+    )
+  }
+
   return (
     <div>
       <List sx={{ maxHeight: "100vh", overflowY: "auto" }}>
@@ -121,6 +167,7 @@ const NFCDataGrid = ({ data, totalValue, numPeople, peopleNames }) => {
               <AccordionSummary expandIcon={<ExpandMoreIcon sx={{color: "white"}}/> } >
                 <strong style={{ fontFamily: "'Roboto'", color: "white" }}>
                   {item.name}
+                  {displayCategory(item)}
                 </strong>
               </AccordionSummary>
               <AccordionDetails sx={{ backgroundColor: "rgb(255, 255, 255)" }}>

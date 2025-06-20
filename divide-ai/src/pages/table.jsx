@@ -30,7 +30,7 @@ const Table = () => {
     iconSrc: null,
   });
 
-  const { purchaseData } = location.state || {};
+  const { purchaseData, classifyItems } = location.state || {};
 
   const handleDialogClose = () => {
     // Não fecha sem submissão
@@ -113,6 +113,7 @@ const Table = () => {
             totalValue={purchaseData.nfcData.totalValue}
             numPeople={people.length}
             peopleNames={people}
+            classifyItems={classifyItems}
           />
         ) : (
           <Box

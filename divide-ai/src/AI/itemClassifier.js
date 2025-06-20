@@ -1,26 +1,38 @@
 async function askTheOracle(question) {
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=AIzaSyCHJcXAdNNI56kegNsIuMlUc58TTODHMEc", {
         method: "POST",
         headers: {
-            "Authorization": "Bearer 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",
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            "model": "deepseek/deepseek-r1-0528-qwen3-8b:free",
-            "messages": [
-                {
-                    "role": "user",
-                    "content": question
-                }
-            ]
+            contents: [{
+                parts: [{
+                    text: question
+                }]
+            }]
         })
     })
-    return (await response.json()).choices[0].message.content;
+    return (await response.json()).candidates[0].content.parts[0].text.trim();
 }
 
-async function classifyItem(item) {
-    const response = await askTheOracle(`Dado o item de compra "${item}", classifique-o em uma das seguintes categorias: "Alimentos", "Bebidas", "Limpeza", "Higiene", "Outros". Não retorne nada além da categoria, sem explicações, justificativas ou estilização. Apenas a categoria.`);
-    console.log(`Item: "${item}" - Categoria: "${response}"`);
+async function getItemsClasses(items) {
+    let classesJson = await askTheOracle(`Dados os itens de compra "${JSON.stringify(items)}", classifique-o em uma das seguintes categorias: "Alimentos", "Bebidas", "Limpeza", "Higiene", "Outros". Retorne um array de objetos com as propriedades "id" e "category, Retorne apenas o array em formato JSON, sem explicações adicionais e nenhuma estilização ou formatação de markdown, apenas o JSON como string. Exemplo: [{"id": 1, "category": "Alimentos"}, {"id": 2, "category": "Bebidas"}]`);
+    if (classesJson.startsWith("```json")) {
+        classesJson = classesJson.slice(7, -3); // Remove the ```json and ``` at the end
+    }
+    return JSON.parse(classesJson);
 }
 
-export default classifyItem;
+export default getItemsClasses;
+
+function teste() {
+    const items = [
+        { id: 1, name: "Arroz" },
+        { id: 2, name: "Feijão" },
+        { id: 3, name: "Sabão em pó" },
+        { id: 4, name: "Shampoo" }
+    ];
+    getItemsClasses(items).then(console.log);
+}
+
+teste();

@@ -55,7 +55,7 @@ const QrCode = () => {
       );
       const purchaseData = response.data;
       console.log(purchaseData);
-      navigate("/table", { state: { url: urlInput, purchaseData } });
+      navigate("/table", { state: { url: urlInput, purchaseData, classifyItems: true } });
     } catch (err) {
       setUrlError("Erro ao extrair dados da nota. Verifique a URL.");
     } finally {

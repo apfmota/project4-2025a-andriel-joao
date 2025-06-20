@@ -43,7 +43,7 @@ const QrCodeScanner = () => {
       try {
         const response = await axios.post(backendServerUrl + '/purchase', { url }, { withCredentials: true });
         const purchaseData = response.data;
-        navigate('/table', { state: { url, purchaseData } });
+        navigate('/table', { state: { url, purchaseData, classifyItems: true } });
       } catch (error) {
         console.error('Erro ao validar QR Code:', error);
         setData('QR Code inválido ou erro na extração da nota.');
