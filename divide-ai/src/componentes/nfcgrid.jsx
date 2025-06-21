@@ -35,7 +35,7 @@ const getInitialClasses = (items) => {
 
 const NFCDataGrid = ({ data, totalValue, numPeople, peopleNames, classifyItems = false }) => {
 
-  const updateItems = (items, selected) => {
+  const updateItems = async (items, selected) => {
     let row = 0;
     for (let item of items) {
       const selectedPeople = [];
@@ -44,7 +44,7 @@ const NFCDataGrid = ({ data, totalValue, numPeople, peopleNames, classifyItems =
           selectedPeople.push(peopleNames[i]);
         }
       }
-      axios.put(
+      await axios.put(
         backendServerUrl + "/item",
         {
           id: item.id,

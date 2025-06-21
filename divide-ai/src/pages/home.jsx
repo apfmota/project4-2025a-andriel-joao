@@ -9,6 +9,7 @@ import axios from 'axios';
 import Sidebar from '../util/sidebar';
 import { backendServerUrl } from '../config/backendIntegration';
 import Purchases from '../componentes/purchases';
+import { getAvaibleUsers, getPayingItems, getPayingPurchases } from '../util/APIFunctions';
 
 const Home = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -29,6 +30,9 @@ const Home = () => {
         console.error("Erro ao buscar notas:", err);
         setNotas([]);
       });
+    getPayingPurchases().then(console.log);
+    getPayingItems().then(console.log);
+    getAvaibleUsers().then(console.log);
     }, 
   []);
   
