@@ -1,6 +1,6 @@
 ## O que faremos:
-- Permitir associar usuários cadastrados na divisão das notas
-- Permitir que o usuário veja/edite as notas nas quais ele foi associado
+- ~~Permitir associar usuários cadastrados na divisão das notas~~ (backend adptado, falta mostrar as opções de usuário no front)
+- ~~Permitir que o usuário veja as notas nas quais ele foi associado~~ (endpoint pronto, falta mostrar só)
 - ~~Classificar itens com IA~~
 - Exibir gráfico com os itens por categoria
 - ~~Login com google~~
