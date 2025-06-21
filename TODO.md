@@ -8,3 +8,4 @@
 
 ### talvez:
 - Grafo mostrando usuários que se dividem
+- Criar usuário caso não exista ao adicionar na nota
