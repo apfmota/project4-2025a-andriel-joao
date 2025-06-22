@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   AppBar,
   Toolbar,
@@ -33,6 +33,7 @@ const theme = createTheme({
 });
 
 const QrCode = () => {
+  const scannerRef = useRef(); // novo ref
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [urlInput, setUrlInput] = useState("");
@@ -55,9 +56,11 @@ const QrCode = () => {
       );
       const purchaseData = response.data;
       console.log(purchaseData);
-      navigate("/table", { state: { url: urlInput, purchaseData, classifyItems: true } });
+      navigate("/table", {
+        state: { url: urlInput, purchaseData, classifyItems: true },
+      });
     } catch (err) {
-      setUrlError("Erro ao extrair dados da nota. Verifique a URL.");
+      setUrlError("Erro ao extrair dados da nota. Verifique a URL.", err);
     } finally {
       setLoading(false);
     }
@@ -101,7 +104,7 @@ const QrCode = () => {
 
         <Sidebar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
 
-        <QrCodeScanner />
+        <QrCodeScanner ref={scannerRef} />
 
         <Box id="footer">
           <ButtonGroup sx={{ display: "grid", gap: 3 }}>
@@ -114,6 +117,7 @@ const QrCode = () => {
                   sx={{ width: 300 }}
                   endIcon={<LinkIcon />}
                   onClick={() => {
+                    scannerRef.current?.stopTimer();
                     setUrlInput("");
                     setUrlError("");
                     setOpenDialog(true);
@@ -163,8 +167,8 @@ const QrCode = () => {
               "& .MuiOutlinedInput-root": {
                 "& fieldset": { borderColor: "white" },
                 "&:hover fieldset": { borderColor: "white" },
-              }}
-            }
+              },
+            }}
           />
         }
         actions={[
@@ -172,7 +176,7 @@ const QrCode = () => {
             onClick={() => setOpenDialog(false)}
             color="inherit"
             variant="outlined"
-             href="/home"
+            href="/home"
           >
             Cancelar
           </Button>,
@@ -183,8 +187,10 @@ const QrCode = () => {
             variant="contained"
             sx={{ backgroundColor: "white" }}
           >
-            <p style={{ color: "#006bff", fontFamily: "'Roboto'", margin: 0 }}>{loading ? "Validando..." : "Confirmar"}</p>
-          </Button>
+            <p style={{ color: "#006bff", fontFamily: "'Roboto'", margin: 0 }}>
+              {loading ? "Validando..." : "Confirmar"}
+            </p>
+          </Button>,
         ]}
       />
     </>
