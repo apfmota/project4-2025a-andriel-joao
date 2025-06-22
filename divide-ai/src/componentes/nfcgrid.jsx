@@ -15,8 +15,8 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { backendServerUrl } from "../config/backendIntegration";
-import SaveIcon from '@mui/icons-material/Save';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import SaveIcon from "@mui/icons-material/Save";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import getItemClass from "../AI/itemClassifier";
 import getItemsClasses from "../AI/itemClassifier";
 const paragraph_style = {
@@ -27,14 +27,19 @@ const paragraph_style = {
 
 const getInitialClasses = (items) => {
   const initialClasses = {};
-    items.forEach((item) => {
-      initialClasses[String(item.id)] = item.category;
-    });
-    return initialClasses;
-}
+  items.forEach((item) => {
+    initialClasses[String(item.id)] = item.category;
+  });
+  return initialClasses;
+};
 
-const NFCDataGrid = ({ data, totalValue, numPeople, peopleNames, classifyItems = false }) => {
-
+const NFCDataGrid = ({
+  data,
+  totalValue,
+  numPeople,
+  peopleNames,
+  classifyItems = false,
+}) => {
   const updateItems = async (items, selected) => {
     let row = 0;
     for (let item of items) {
@@ -120,35 +125,44 @@ const NFCDataGrid = ({ data, totalValue, numPeople, peopleNames, classifyItems =
     const effect = async () => {
       if (classifyItems) {
         let newItemsClasses = {};
-        const obtainedClasses = await getItemsClasses(items.map(item => ({ id: item.id, name: item.name })));
+        const obtainedClasses = await getItemsClasses(
+          items.map((item) => ({ id: item.id, name: item.name }))
+        );
         for (const itemClass of obtainedClasses) {
-          axios.post(backendServerUrl + "/item-category", {
-            itemId: itemClass.id,
-            category: itemClass.category
-          }, { withCredentials: true })
+          axios.post(
+            backendServerUrl + "/item-category",
+            {
+              itemId: itemClass.id,
+              category: itemClass.category,
+            },
+            { withCredentials: true }
+          );
           newItemsClasses[String(itemClass.id)] = itemClass.category;
         }
         setItemClasses(newItemsClasses);
       }
-    }
+    };
     effect();
   }, []);
 
   const displayCategory = (item) => {
     return (
-      <Paper sx={{
-            padding: "5px",
-            backgroundColor: "#64adec",
-            borderRadius: "5px",
-            color: "#005eb0"
-          }}>
-        {itemClasses[String(item.id)] != undefined
-          ? <span>{itemClasses[String(item.id)]}</span>
-          : <span style={{color: 'red'}}>Aguardando classificação...</span>
-        }
+      <Paper
+        sx={{
+          padding: "5px",
+          backgroundColor: "#64adec",
+          borderRadius: "5px",
+          color: "#005eb0",
+        }}
+      >
+        {itemClasses[String(item.id)] != undefined ? (
+          <span>{itemClasses[String(item.id)]}</span>
+        ) : (
+          <span style={{ color: "red" }}>Aguardando classificação...</span>
+        )}
       </Paper>
-    )
-  }
+    );
+  };
 
   return (
     <div>
@@ -164,7 +178,9 @@ const NFCDataGrid = ({ data, totalValue, numPeople, peopleNames, classifyItems =
                 transition: "background-color 0.3s ease",
               }}
             >
-              <AccordionSummary expandIcon={<ExpandMoreIcon sx={{color: "white"}}/> } >
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon sx={{ color: "white" }} />}
+              >
                 <strong style={{ fontFamily: "'Roboto'", color: "white" }}>
                   {item.name}
                   {displayCategory(item)}
@@ -212,6 +228,7 @@ const NFCDataGrid = ({ data, totalValue, numPeople, peopleNames, classifyItems =
             </Accordion>
           </ListItem>
         ))}
+        <br /> <br /> <br /> <br />
         <ListItem
           sx={{ position: "sticky", bottom: 70, backgroundColor: "#006bff" }}
         >
@@ -222,7 +239,9 @@ const NFCDataGrid = ({ data, totalValue, numPeople, peopleNames, classifyItems =
               transition: "background-color 0.3s ease",
             }}
           >
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{color: "white"}} />}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon sx={{ color: "white" }} />}
+            >
               <p
                 style={{
                   fontFamily: "'Jersey 15'",
@@ -253,8 +272,18 @@ const NFCDataGrid = ({ data, totalValue, numPeople, peopleNames, classifyItems =
                   ))}
                 </div>
               </div>
-              <div style={{textAlign: "end"}}>
-                <Button startIcon={<SaveIcon />} size="medium" variant="contained" sx={{ textTransform: "none", color: "white", backgroundColor: "#006bff" }} onClick={() => updateItems(items, selected)}>
+              <div style={{ textAlign: "end" }}>
+                <Button
+                  startIcon={<SaveIcon />}
+                  size="medium"
+                  variant="contained"
+                  sx={{
+                    textTransform: "none",
+                    color: "white",
+                    backgroundColor: "#006bff",
+                  }}
+                  onClick={() => updateItems(items, selected)}
+                >
                   SALVAR ITEM
                 </Button>
               </div>
