@@ -46,8 +46,9 @@ const NFCDataGrid = ({
     content: "",
     iconSrc: null,
   });
-
+  const [isSaving, setIsSaving] = useState(false);
   const updateItems = async (items, selected) => {
+    setIsSaving(true);
     try {
       let row = 0;
       for (let item of items) {
@@ -81,6 +82,8 @@ const NFCDataGrid = ({
         content: "Falha ao salvar lista.",
         iconSrc: "/caution.png",
       });
+    } finally {
+      setIsSaving(false); // fim do loading
     }
   };
 
@@ -313,14 +316,15 @@ const NFCDataGrid = ({
                   startIcon={<SaveIcon />}
                   size="medium"
                   variant="contained"
+                  disabled={isSaving}
                   sx={{
                     textTransform: "none",
                     color: "white",
-                    backgroundColor: "#006bff",
+                    backgroundColor: isSaving ? "#9e9e9e" : "#006bff",
                   }}
                   onClick={() => updateItems(items, selected)}
                 >
-                  SALVAR LISTA
+                  {isSaving ? "SALVANDO..." : "SALVAR LISTA"}{" "}
                 </Button>
               </div>
             </AccordionDetails>

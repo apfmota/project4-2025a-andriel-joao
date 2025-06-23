@@ -32,8 +32,14 @@ const Table = () => {
 
   const { purchaseData, classifyItems } = location.state || {};
 
-  const handleDialogClose = () => {
-    // Não fecha sem submissão
+  const handleDialogClose = () => {};
+
+  const itemValueSumMatchesTotalValue = (items, totalValue) => {
+    let sum = 0;
+    for (const item of items) {
+      sum += Number(item.value);
+    }
+    return sum === Number(totalValue);
   };
 
   const handleDialogSubmit = async (peopleNames) => {
@@ -66,6 +72,28 @@ const Table = () => {
       );
       setItems(itemsData.data.items);
       console.log(itemsData.data.items);
+
+      if (
+        !itemValueSumMatchesTotalValue(
+          itemsData.data.items,
+          purchaseData.nfcData.totalValue
+        )
+      ) {
+        setFeedbackDialog({
+          open: true,
+          title: "Aviso",
+          content:
+            "Detectamos que a nota fiscal tem descontos nos itens, não conseguimos lidar com isso no momento.",
+          iconSrc: "/caution.png",
+        });
+      } else {
+        setFeedbackDialog({
+          open: true,
+          title: "Eba!",
+          content: "Nota fiscal sem descontos",
+          iconSrc: "/verified.png",
+        });
+      }
     } catch (error) {
       console.error(error);
       setFeedbackDialog({
