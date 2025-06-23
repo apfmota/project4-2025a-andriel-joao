@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useMemo, use } from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import React, { useState, useEffect } from "react";
 import Checkbox from "@mui/material/Checkbox";
 import DropdownCheckboxes from "../util/menudropdown";
 import {
@@ -165,8 +164,14 @@ const NFCDataGrid = ({
   };
 
   return (
-    <div>
-      <List sx={{ maxHeight: "100vh", overflowY: "auto" }}>
+    <Box sx={{ position: "relative" }}>
+      <List
+        sx={{
+          maxHeight: "100vh",
+          overflowY: "auto",
+          paddingBottom: "200px",
+        }}
+      >
         {data.map((item, index) => (
           <ListItem key={index}>
             <Accordion
@@ -228,13 +233,24 @@ const NFCDataGrid = ({
             </Accordion>
           </ListItem>
         ))}
-        <br /> <br /> <br /> <br />
-        <ListItem
-          sx={{ position: "sticky", bottom: 70, backgroundColor: "#006bff" }}
-        >
+      </List>
+
+      {/* Accordion fixo fora da lista */}
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: "env(safe-area-inset-bottom)",
+          left: 0,
+          right: 0,
+          zIndex: 1300,
+          display: "flex",
+          justifyContent: "center",
+          pointerEvents: "none",
+        }}
+      >
+        <Box sx={{ width: 400, pointerEvents: "auto" }}>
           <Accordion
             sx={{
-              width: 400,
               backgroundColor: "#006bff",
               transition: "background-color 0.3s ease",
             }}
@@ -254,23 +270,19 @@ const NFCDataGrid = ({
             </AccordionSummary>
             <AccordionDetails sx={{ backgroundColor: "rgb(255, 255, 255)" }}>
               <div>
-                <div style={{ marginBottom: 10 }}>
-                  <p style={paragraph_style}>
-                    <strong>VALOR TOTAL GASTO: R$ {totalValue}</strong>
+                <p style={paragraph_style}>
+                  <strong>VALOR TOTAL GASTO: R$ {totalValue}</strong>
+                </p>
+                <p style={paragraph_style}>
+                  <strong>NÚMERO DE PESSOAS: {numPeople}</strong>
+                </p>
+                {totals.map((total, index) => (
+                  <p style={paragraph_style} key={index}>
+                    <strong>
+                      {peopleNames[index]} DEVE: R$ {total.toFixed(2)}
+                    </strong>
                   </p>
-                </div>
-                <div style={{ marginBottom: 10, display: "column", gap: 10 }}>
-                  <p style={paragraph_style}>
-                    <strong>NÚMERO DE PESSOAS: {numPeople}</strong>
-                  </p>
-                  {totals.map((total, index) => (
-                    <p style={paragraph_style} key={index}>
-                      <strong>
-                        {peopleNames[index]} DEVE: R$ {total.toFixed(2)}
-                      </strong>
-                    </p>
-                  ))}
-                </div>
+                ))}
               </div>
               <div style={{ textAlign: "end" }}>
                 <Button
@@ -289,9 +301,10 @@ const NFCDataGrid = ({
               </div>
             </AccordionDetails>
           </Accordion>
-        </ListItem>
-      </List>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 };
+
 export default NFCDataGrid;
