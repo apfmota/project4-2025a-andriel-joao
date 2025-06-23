@@ -16,8 +16,9 @@ import axios from "axios";
 import { backendServerUrl } from "../config/backendIntegration";
 import SaveIcon from "@mui/icons-material/Save";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import getItemClass from "../AI/itemClassifier";
 import getItemsClasses from "../AI/itemClassifier";
+import CustomDialog from "../componentes/caixadialogo";
+
 const paragraph_style = {
   fontFamily: "Roboto, sans-serif",
   fontSize: 19,
@@ -39,24 +40,47 @@ const NFCDataGrid = ({
   peopleNames,
   classifyItems = false,
 }) => {
+  const [feedbackDialog, setFeedbackDialog] = useState({
+    open: false,
+    title: "",
+    content: "",
+    iconSrc: null,
+  });
+
   const updateItems = async (items, selected) => {
-    let row = 0;
-    for (let item of items) {
-      const selectedPeople = [];
-      for (let i = 0; i < selected.length; i++) {
-        if (selected[row][i]) {
-          selectedPeople.push(peopleNames[i]);
+    try {
+      let row = 0;
+      for (let item of items) {
+        const selectedPeople = [];
+        for (let i = 0; i < selected.length; i++) {
+          if (selected[row][i]) {
+            selectedPeople.push(peopleNames[i]);
+          }
         }
+        await axios.put(
+          backendServerUrl + "/item",
+          {
+            id: item.id,
+            payers: selectedPeople,
+          },
+          { withCredentials: true }
+        );
+        row++;
       }
-      await axios.put(
-        backendServerUrl + "/item",
-        {
-          id: item.id,
-          payers: selectedPeople,
-        },
-        { withCredentials: true }
-      );
-      row++;
+      setFeedbackDialog({
+        open: true,
+        title: "Sucesso",
+        content: "Lista salva com sucesso!",
+        iconSrc: "/verified.png",
+      });
+    } catch (error) {
+      console.error(error);
+      setFeedbackDialog({
+        open: true,
+        title: "Erro",
+        content: "Falha ao salvar lista.",
+        iconSrc: "/caution.png",
+      });
     }
   };
 
@@ -296,13 +320,34 @@ const NFCDataGrid = ({
                   }}
                   onClick={() => updateItems(items, selected)}
                 >
-                  SALVAR ITEM
+                  SALVAR LISTA
                 </Button>
               </div>
             </AccordionDetails>
           </Accordion>
         </Box>
       </Box>
+
+      <CustomDialog
+        open={feedbackDialog.open}
+        onClose={() => setFeedbackDialog({ ...feedbackDialog, open: false })}
+        title={feedbackDialog.title}
+        content={feedbackDialog.content}
+        iconSrc={feedbackDialog.iconSrc}
+        actions={[
+          <Button
+            onClick={() =>
+              setFeedbackDialog({ ...feedbackDialog, open: false })
+            }
+            variant="contained"
+            sx={{ backgroundColor: "white" }}
+          >
+            <p style={{ color: "#006bff", fontFamily: "'Roboto'", margin: 0 }}>
+              OK
+            </p>
+          </Button>,
+        ]}
+      />
     </Box>
   );
 };

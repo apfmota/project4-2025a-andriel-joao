@@ -45,27 +45,27 @@ const Table = () => {
         open: true,
         title: "Erro",
         content: "ID da compra não encontrado.",
-        iconSrc: "/caution.png", 
+        iconSrc: "/caution.png",
       });
       return;
     }
 
     try {
-      await axios.put(backendServerUrl + "/purchase", {
-        id: purchaseData.purchaseId,
-        payers: peopleNames,
-      }, { withCredentials: true });
+      await axios.put(
+        backendServerUrl + "/purchase",
+        {
+          id: purchaseData.purchaseId,
+          payers: peopleNames,
+        },
+        { withCredentials: true }
+      );
 
-      const itemsData = await axios.get(backendServerUrl + "/purchase?id=" + purchaseData.purchaseId, { withCredentials: true }) 
+      const itemsData = await axios.get(
+        backendServerUrl + "/purchase?id=" + purchaseData.purchaseId,
+        { withCredentials: true }
+      );
       setItems(itemsData.data.items);
       console.log(itemsData.data.items);
-
-      setFeedbackDialog({
-        open: true,
-        title: "Sucesso",
-        content: "Pagadores registrados com sucesso!",
-        iconSrc: "/verified.png",
-      });
     } catch (error) {
       console.error(error);
       setFeedbackDialog({
@@ -106,8 +106,11 @@ const Table = () => {
         onSubmit={handleDialogSubmit}
       />
 
-      <Box sx={{ mt: 10, px: 2}}>
-        {purchaseData != null && Array.isArray(people) && people.length > 0  && items.length > 0 ? (
+      <Box sx={{ mt: 10, px: 2 }}>
+        {purchaseData != null &&
+        Array.isArray(people) &&
+        people.length > 0 &&
+        items.length > 0 ? (
           <NFCDataGrid
             data={items}
             totalValue={purchaseData.nfcData.totalValue}
@@ -145,9 +148,17 @@ const Table = () => {
         content={feedbackDialog.content}
         iconSrc={feedbackDialog.iconSrc}
         actions={[
-          <Button onClick={() => setFeedbackDialog({ ...feedbackDialog, open: false })} variant="contained" sx={{ backgroundColor: "white" }}>
-            <p style={{ color: "#006bff", fontFamily: "'Roboto'", margin: 0 }}>OK</p>
-          </Button>
+          <Button
+            onClick={() =>
+              setFeedbackDialog({ ...feedbackDialog, open: false })
+            }
+            variant="contained"
+            sx={{ backgroundColor: "white" }}
+          >
+            <p style={{ color: "#006bff", fontFamily: "'Roboto'", margin: 0 }}>
+              OK
+            </p>
+          </Button>,
         ]}
       />
     </Box>
