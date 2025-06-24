@@ -70,7 +70,7 @@ const QrCodeScanner = forwardRef((props, ref) => {
   };
 
   const handleTryAgain = () => {
-    window.location.reload();
+    navigate(0);
   };
 
   return (

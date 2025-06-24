@@ -2,7 +2,7 @@
 
 ![alt text](gif-login-1.gif) ![alt text](gif-homeetc-1.gif)
 
-## [Deply frontend](https://project3-2025a-andriel-joao.vercel.app)
+## [Deply frontend](https://project4-2025a-andriel-joao.vercel.app)
 ## [Deploy backend](https://divide-ai-backend-1.onrender.com)
 
 ### [Repositório Backend](https://github.com/apfmota/divide-ai-backend)🔗 (commits a partir de 11/06 se referem ao projeto atual)
@@ -33,6 +33,7 @@ Com a ideia já definida e tecnologias decididas foi necessário pensar no layou
 - Vite
 - H2 (banco de dados)
 - Selenium (web scrapping)
+- Google Gemini
 
 #### Ambiente de desenvolvimento
 
@@ -43,7 +44,6 @@ Com a ideia já definida e tecnologias decididas foi necessário pensar no layou
 - Chat GPT (principalmente com o deploy)
 - [Guia Spring Boot](https://spring.io/guides/gs/spring-boot)
 - [Material UI](https://mui.com/material-ui)
--
--
+
 ---
 Projeto entregue para a disciplina de [Desenvolvimento de Software para a Web](http://github.com/andreainfufsm/elc1090-2025a) em 2025a
