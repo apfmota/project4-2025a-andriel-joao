@@ -11,6 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import { useState } from "react";
 import axios from "axios";
+import CustomDialog from "../componentes/caixadialogo";
 import { backendServerUrl } from "../config/backendIntegration";
 
 const theme = createTheme({
@@ -53,14 +54,30 @@ const GoogleRegister = () => {
   const location = useLocation();
   const { email } = location.state;
   const [username, setUsername] = useState("");
+  const [feedbackDialog, setFeedbackDialog] = useState({
+    open: false,
+    title: "",
+    content: "",
+    iconSrc: "",
+  });
 
   const handleSubmit = async () => {
-    await axios.post(
-      backendServerUrl + "/google-register",
-      { email, username },
-      { withCredentials: true }
-    );
-    navigate("/home");
+    try {
+      await axios.post(
+        backendServerUrl + "/google-register",
+        { email, username },
+        { withCredentials: true }
+      );
+      navigate("/home");
+    } catch (error) {
+      setFeedbackDialog({
+        open: true,
+        title: "Erro ao cadastrar",
+        content:
+          "Não foi possível completar o cadastro. Por favor, tente novamente.",
+        iconSrc: "/caution.png",
+      });
+    }
   };
 
   return (
@@ -132,6 +149,26 @@ const GoogleRegister = () => {
           </Box>
         </Paper>
       </Container>
+      <CustomDialog
+        open={feedbackDialog.open}
+        onClose={() => setFeedbackDialog({ ...feedbackDialog, open: false })}
+        title={feedbackDialog.title}
+        content={feedbackDialog.content}
+        iconSrc={feedbackDialog.iconSrc}
+        actions={[
+          <Button
+            onClick={() =>
+              setFeedbackDialog({ ...feedbackDialog, open: false })
+            }
+            variant="contained"
+            sx={{ backgroundColor: "white" }}
+          >
+            <p style={{ color: "#006bff", fontFamily: "'Roboto'", margin: 0 }}>
+              OK
+            </p>
+          </Button>,
+        ]}
+      />
     </Box>
   );
 };

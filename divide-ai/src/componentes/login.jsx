@@ -3,8 +3,7 @@ import { alpha, styled } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import FormControl from "@mui/material/FormControl";
-import GoogleIcon from "@mui/icons-material/Google";
+import CustomDialog from "./caixadialogo";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Button, ButtonGroup, colors } from "@mui/material";
 import { backendServerUrl } from "../config/backendIntegration";
@@ -52,6 +51,12 @@ const Login = ({ navigate }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [feedbackDialog, setFeedbackDialog] = React.useState({
+    open: false,
+    title: "",
+    content: "",
+    iconSrc: "",
+  });
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -69,7 +74,13 @@ const Login = ({ navigate }) => {
     if (response.type === "Success") {
       navigate("/home");
     } else {
-      alert(response.message);
+      setFeedbackDialog({
+        open: true,
+        title: "Erro",
+        content:
+          "Falha ao fazer login. Aguarde uns instantes e tente novamente.",
+        iconSrc: "/caution.png",
+      });
     }
 
     console.log("logando... 🔍");
@@ -133,6 +144,26 @@ const Login = ({ navigate }) => {
           </Box>
         </Box>
       </form>
+      <CustomDialog
+        open={feedbackDialog.open}
+        onClose={() => setFeedbackDialog({ ...feedbackDialog, open: false })}
+        title={feedbackDialog.title}
+        content={feedbackDialog.content}
+        iconSrc={feedbackDialog.iconSrc}
+        actions={[
+          <Button
+            onClick={() =>
+              setFeedbackDialog({ ...feedbackDialog, open: false })
+            }
+            variant="contained"
+            sx={{ backgroundColor: "white" }}
+          >
+            <p style={{ color: "#006bff", fontFamily: "'Roboto'", margin: 0 }}>
+              OK
+            </p>
+          </Button>,
+        ]}
+      />
     </Box>
   );
 };

@@ -20,7 +20,7 @@ const Charts = () => {
   const [payingItems, setPayingItems] = useState([]);
   const [payingPurchases, setPayingPurchases] = useState([]);
   const [userData, setUserData] = useState({ username: "", email: "" });
-
+  const hasData = payingItems.length > 0 || payingPurchases.length > 0;
   const meVeTudoAi = () => {
     getPayingItems().then((items) => {
       setPayingItems(items);
@@ -184,143 +184,176 @@ const Charts = () => {
           </Toolbar>
         </AppBar>
         <Sidebar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
-        <Box
-          sx={{
-            mt: 8,
-            px: { xs: 2, sm: 4, md: 10 },
-            width: "100%",
-            textAlign: "center",
-          }}
-        >
-          <Box
-            sx={{
-              maxWidth: "100%", // importante
-              whiteSpace: "normal", // permite quebra
-              wordBreak: "break-word", // quebra palavras longas
-              overflowWrap: "break-word", // quebra palavras compostas
-            }}
-          >
-            <Typography
-              variant="h4"
+        {/* condição */}
+        {hasData ? (
+          <>
+            <Box
               sx={{
-                color: "#006bff",
-                fontFamily: "'Jersey 15'",
-                mb: 2,
+                mt: 8,
+                px: { xs: 2, sm: 4, md: 10 },
+                width: "100%",
+                textAlign: "center",
               }}
             >
-              Quantidade de itens devidos por categoria
-            </Typography>
-          </Box>
+              <Box
+                sx={{
+                  maxWidth: "100%", // importante
+                  whiteSpace: "normal", // permite quebra
+                  wordBreak: "break-word", // quebra palavras longas
+                  overflowWrap: "break-word", // quebra palavras compostas
+                }}
+              >
+                <Typography
+                  variant="h4"
+                  sx={{
+                    color: "#006bff",
+                    fontFamily: "'Jersey 15'",
+                    mb: 2,
+                  }}
+                >
+                  Quantidade de itens devidos por categoria
+                </Typography>
+              </Box>
 
-          <Box sx={{ width: "100%", maxWidth: 350, mx: "auto" }}>
-            <PieChart
-              series={[{ data: getPayingItemsCountByCategory() }]}
-              width={300}
-              height={300}
-            />
-          </Box>
+              <Box sx={{ width: "100%", maxWidth: 350, mx: "auto" }}>
+                <PieChart
+                  series={[{ data: getPayingItemsCountByCategory() }]}
+                  width={300}
+                  height={300}
+                />
+              </Box>
 
-          <Typography
-            variant="h4"
-            color="#006bff"
-            fontFamily="'Jersey 15'"
-            mt={2}
-            sx={{
-              whiteSpace: "normal",
-            }}
-          >
-            Total itens: {payingItems.length}
-          </Typography>
-        </Box>
+              <Typography
+                variant="h4"
+                color="#006bff"
+                fontFamily="'Jersey 15'"
+                mt={2}
+                sx={{
+                  whiteSpace: "normal",
+                }}
+              >
+                Total itens: {payingItems.length}
+              </Typography>
+            </Box>
 
-        <Box sx={{ px: { xs: 2, sm: 4, md: 10 }, py: 4, width: "100%" }}>
+            <Box sx={{ px: { xs: 2, sm: 4, md: 10 }, py: 4, width: "100%" }}>
+              <Box
+                sx={{
+                  maxWidth: "100%",
+                  whiteSpace: "normal",
+                  wordBreak: "break-word",
+                  overflowWrap: "break-word",
+                }}
+              >
+                <Typography
+                  variant="h4"
+                  sx={{
+                    color: "#006bff",
+                    fontFamily: "'Jersey 15'",
+                    mb: 2,
+                  }}
+                >
+                  Total de gastos por categoria (itens devidos)
+                </Typography>
+              </Box>
+
+              <Box sx={{ width: "100%", overflowX: "auto" }}>
+                <BarChart
+                  layout="horizontal"
+                  yAxis={[
+                    {
+                      scaleType: "band",
+                      categoryGapRatio: 0.5,
+                      data: getSpendingByItemCategory().map((c) => c.label),
+                    },
+                  ]}
+                  xAxis={[
+                    {
+                      scaleType: "linear", // eixo numérico
+                      tickCount: 6, // define quantidade de ticks no eixo
+                    },
+                  ]}
+                  series={[
+                    {
+                      data: getSpendingByItemCategory().map((c) => c.value),
+                      valueFormatter: (value) =>
+                        `${value.toFixed(2).replace(".", ",")} R$`,
+                      color: "#006bff",
+                    },
+                  ]}
+                  width={Math.max(getSpendingByItemCategory().length * 60, 400)}
+                  height={400}
+                  barLabel="value"
+                />
+              </Box>
+              <Box sx={{ width: "100%", overflowX: "auto", mt: 4 }}>
+                <Typography
+                  variant="h4"
+                  color="#006bff"
+                  fontFamily={"'Jersey 15'"}
+                  mb={2}
+                >
+                  Gasto por estabelecimento (somente itens devidos)
+                </Typography>
+                <BarChart
+                  layout="horizontal"
+                  yAxis={[
+                    {
+                      scaleType: "band",
+                      categoryGapRatio: 0.8,
+                      data: getSpendingCountByStore().map((c) => c.label),
+                    },
+                  ]}
+                  xAxis={[
+                    {
+                      scaleType: "linear",
+                      tickFormat: (value) => value.toFixed(2).replace(".", ","),
+                    },
+                  ]}
+                  series={[
+                    {
+                      data: getSpendingCountByStore().map((c) => c.value),
+                      valueFormatter: (value) =>
+                        `${value.toFixed(2).replace(".", ",")} R$`,
+                      color: "#0099ff",
+                    },
+                  ]}
+                  width={Math.max(getSpendingCountByStore().length * 80, 400)}
+                  height={Math.max(getSpendingCountByStore().length * 80, 300)}
+                  barLabel="value"
+                />
+              </Box>
+            </Box>
+          </>
+        ) : (
           <Box
             sx={{
-              maxWidth: "100%",
-              whiteSpace: "normal",
-              wordBreak: "break-word",
-              overflowWrap: "break-word",
+              mt: 20,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+              color: "#666",
             }}
           >
             <Typography
-              variant="h4"
-              sx={{
-                color: "#006bff",
-                fontFamily: "'Jersey 15'",
-                mb: 2,
-              }}
-            >
-              Total de gastos por categoria (itens devidos)
-            </Typography>
-          </Box>
-
-          <Box sx={{ width: "100%", overflowX: "auto" }}>
-            <BarChart
-              layout="horizontal"
-              yAxis={[
-                {
-                  scaleType: "band",
-                  categoryGapRatio: 0.5,
-                  data: getSpendingByItemCategory().map((c) => c.label),
-                },
-              ]}
-              xAxis={[
-                {
-                  scaleType: "linear", // eixo numérico
-                  tickCount: 6, // define quantidade de ticks no eixo
-                },
-              ]}
-              series={[
-                {
-                  data: getSpendingByItemCategory().map((c) => c.value),
-                  valueFormatter: (value) =>
-                    `${value.toFixed(2).replace(".", ",")} R$`,
-                  color: "#006bff",
-                },
-              ]}
-              width={Math.max(getSpendingByItemCategory().length * 60, 400)}
-              height={400}
-              barLabel="value"
-            />
-          </Box>
-          <Box sx={{ width: "100%", overflowX: "auto", mt: 4 }}>
-            <Typography
-              variant="h4"
-              color="#006bff"
+              variant="h6"
+              fontSize={32}
               fontFamily={"'Jersey 15'"}
-              mb={2}
+              color="#006bff"
             >
-              Gasto por estabelecimento (somente itens devidos)
+              Nada aqui ainda...
             </Typography>
-            <BarChart
-              layout="horizontal"
-              yAxis={[
-                {
-                  scaleType: "band",
-                  categoryGapRatio: 0.8,
-                  data: getSpendingCountByStore().map((c) => c.label),
-                },
-              ]}
-              xAxis={[
-                {
-                  scaleType: "linear",
-                  tickFormat: (value) => value.toFixed(2).replace(".", ","),
-                },
-              ]}
-              series={[
-                {
-                  data: getSpendingCountByStore().map((c) => c.value),
-                  valueFormatter: (value) =>
-                    `${value.toFixed(2).replace(".", ",")} R$`,
-                  color: "#0099ff",
-                },
-              ]}
-              width={Math.max(getSpendingCountByStore().length * 80, 400)}
-              height={Math.max(getSpendingCountByStore().length * 80, 300)}
-              barLabel="value"
-            />
+            <Typography
+              variant="body2"
+              fontSize={20}
+              fontFamily={"'Jersey 15'"}
+              color="#006bff"
+            >
+              Adicione uma Nota Fiscal!
+            </Typography>
           </Box>
-        </Box>
+        )}
       </Box>
     </>
   );
