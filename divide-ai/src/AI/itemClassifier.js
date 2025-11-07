@@ -1,6 +1,6 @@
 async function askTheOracle(question) {
   const response = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=579708175877-fgi1k76bfaa2vjkmef7m8dll1bc7766p.apps.googleusercontent.com",
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=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",
     {
       method: "POST",
       headers: {
